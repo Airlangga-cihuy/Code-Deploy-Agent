@@ -1,0 +1,17 @@
+#!/bin/bash
+set -euxo pipefail
+
+apt-get update -y
+apt-get install -y ruby-full wget
+
+cd /tmp
+wget https://aws-codedeploy-us-east-1.s3.us-east-1.amazonaws.com/latest/install
+chmod +x ./install
+./install auto
+
+echo ":region: us-east-1" >> /etc/codedeploy-agent/conf/codedeployagent.yml
+
+systemctl enable codedeploy-agent
+systemctl restart codedeploy-agent
+
+mkdir -p /var/www/html
