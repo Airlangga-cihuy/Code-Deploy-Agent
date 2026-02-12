@@ -1,0 +1,20 @@
+#!/bin/bash
+set -euxo pipefail
+
+if command -v dnf >/dev/null 2>&1; then
+  dnf -y install ruby wget
+else
+  yum -y install ruby wget
+fi
+
+cd /tmp
+wget https://aws-codedeploy-us-west-2.s3.us-west-2.amazonaws.com/latest/install
+chmod +x ./install
+./install auto
+
+echo ":region: us-west-2" >> /etc/codedeploy-agent/conf/codedeployagent.yml
+
+systemctl enable codedeploy-agent
+systemctl restart codedeploy-agent
+
+mkdir -p /var/www/html
